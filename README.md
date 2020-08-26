@@ -13,7 +13,7 @@ Allows working with an "hierarchical" SObject relationships (Lookup or Master-de
 ```bash
 git clone git@github.com:ChuckJonas/hierarchical-search.git
 sfdx force:source:convert -d dist
-sfdx force:mdapi:deploy -d dist
+sfdx force:mdapi:deploy -d dist -u your-user
 ```
 
 ## Usage
