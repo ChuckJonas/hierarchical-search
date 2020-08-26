@@ -2,7 +2,7 @@
   "name": "hierarchical-search",
   "private": true,
   "version": "1.0.0",
-  "description": "Provides methods to traverse hierarchical relationships",
+  "description": "Salesforce Apex library for traversing hierarchical relationship",
   "scripts": {
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\""

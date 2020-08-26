@@ -9,6 +9,14 @@ Works for any `SObject`.
 - Find the "root" or highest ancestor
 - Find ALL children
 
+## Install
+
+```bash
+git clone git@github.com:ChuckJonas/hierarchical-search.git
+sfdx force:source:convert -d dist
+sfdx force:mdapi:deploy -d dist
+```
+
 ## Usage
 
 ```java
