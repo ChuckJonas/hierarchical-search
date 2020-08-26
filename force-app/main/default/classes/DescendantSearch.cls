@@ -70,13 +70,12 @@ public class DescendantSearch {
   }
 
   public TrunkReference getTrunkReference(SObject sob, Integer depth, Map<Id, TrunkReference> cachedLeafTrunks) {
-    SObject parent = sob.getSObject(relationship);
-
-    TrunkReference td = cachedLeafTrunks.get(parent.Id);
+    Id parentId = (Id) sob.get(relationship);
+    TrunkReference td = cachedLeafTrunks.get(parentId);
     if (td != null) {
       return new TrunkReference(td.trunkId, td.depth + depth);
     }
-    return getTrunkReference(parent, ++depth, cachedLeafTrunks);
+    return getTrunkReference(sob.getSObject(relationship), ++depth, cachedLeafTrunks);
   }
 
   /**
