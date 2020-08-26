@@ -2,12 +2,11 @@
 
 Allows working with an "hierarchical" SObject relationships (Lookup or Master-detail that references the same SObject type. EG: `Account.Parent`).
 
-Works for any `SObject`.
-
 ## Functionality
 
-- Find the "root" or highest ancestor
+- Find the "root" (AKA highest parent)
 - Find ALL children
+- Works for any `SObject`
 
 ## Install
 
