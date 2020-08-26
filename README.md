@@ -30,7 +30,7 @@ System.debug('The Root of this account is ' + roots.get(child.Id));
 
 ```java
 DescendantSearch r = new DescendantSearch(Account.getSObjectType(), Account.ParentId);
-Map<Id, List<Id>> children = r.search(new Set<Id, List<Id>>{ parent.Id });
+Map<Id, List<Id>> children = r.search(new Set<Id>{ parent.Id });
 System.debug('This Account has ' + children.get(parent.Id).size() + ' children');
 ```
 
