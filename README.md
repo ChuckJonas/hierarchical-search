@@ -18,28 +18,31 @@ sfdx force:mdapi:deploy -d dist -u your-user
 
 ## Usage
 
-```java
-//example function that sets the "primary" on an Account to it's root
-void updatePrimaryAccount(Account child){
-  RootSearch r = new RootSearch(Account.getSObjectType(), Account.ParentId);
-  Map<Id, Id> roots = r.search(new Set<Id>{ child.Id });
-  child.Primary_Account__c = roots.get(child.Id);
-}
-```
-
-### Find the Root of any record
+### Find the root of a record(s)
 
 ```java
-//example function gets all children under and account
-Id[] getAccountChildrenIds(Account parent){
-  DescendantSearch r = new DescendantSearch(Account.getSObjectType(), Account.ParentId);
-  Map<Id, List<Id>> children = r.search(new Set<Id, List<Id>>{ parent.Id });
-  return children.get(parent.Id);
-}
-
+RootSearch r = new RootSearch(Account.getSObjectType(), Account.ParentId);
+Map<Id, Id> roots = r.search(new Set<Id>{ child.Id });
+System.debug('The Root of this account is ' + roots.get(child.Id));
 ```
 
-See unit tests for more examples.
+### Find the children of a record(s)
+
+```java
+DescendantSearch r = new DescendantSearch(Account.getSObjectType(), Account.ParentId);
+Map<Id, List<Id>> children = r.search(new Set<Id, List<Id>>{ parent.Id });
+System.debug('This Account has ' + children.get(parent.Id).size() + ' children');
+```
+
+### "Ultimate Parent"
+
+A common use case for this type of thing is to create an ["Ultimate Parent Lookup"](https://trailblazers.salesforce.com/answers?id=90630000000ChkPAAS) on an Account:
+
+- Realtime (trigger) (TODO: Add Example)
+- near-realtime (trigger + @future) (TODO: Add Example)
+- [Scheduled Batch Job](https://github.com/ChuckJonas/hierarchical-search/blob/master/examples/UltimateParentBatch.cls)
+
+Depending on your requirements, you might use a combination of these approaches.
 
 ## Performance
 
