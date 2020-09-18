@@ -9,7 +9,6 @@ public class DescendantSearch {
   String query;
   Integer maxDepthForIteration;
 
-
   /**
    * Constructor
    * @param sobType The SObject Type to search on
