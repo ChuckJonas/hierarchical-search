@@ -16,7 +16,7 @@ public class DescendantSearch {
    * @param parentField The Master-Detail or Lookup relationship to traverse
    */
   public DescendantSearch(SObjectType sobType, SObjectField relationship) {
-    this(sobType, relationship, 5);
+    this(sobType, relationship, HierarchicalSearchUtil.DEFAULT_MAX_DEPTH);
   }
 
   /**

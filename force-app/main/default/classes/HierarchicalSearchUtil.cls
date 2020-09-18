@@ -3,9 +3,7 @@
  *  Helpers for RootSearch and Descendant search
  */
 public class HierarchicalSearchUtil {
-  public static String[] generateMaxTraverseFields(SObjectField relationship) {
-    return generateMaxTraverseFields(relationship, 5);
-  }
+  public static final Integer DEFAULT_MAX_DEPTH = 5;
 
   public static String[] generateMaxTraverseFields(SObjectField relationship, Integer depth) {
     Schema.DescribeFieldResult describe = relationship.getDescribe();

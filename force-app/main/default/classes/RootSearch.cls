@@ -15,7 +15,7 @@ public class RootSearch {
    * @param parentField The Master-Detail or Lookup relationship to traverse
    */
   public RootSearch(SObjectType sobType, SObjectField parentField) {
-    this(sobType, parentField, 5);
+    this(sobType, parentField, HierarchicalSearchUtil.DEFAULT_MAX_DEPTH);
   }
 
   /**
