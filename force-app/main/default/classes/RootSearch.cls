@@ -67,8 +67,9 @@ public class RootSearch {
 
     Boolean maxDepth = isMaxDepth(depth);
     SObject parent = sob.getSObject(this.parentField);
-    if (parent == null || maxDepth) {
-      return new RootSearchResult(sob.Id, !maxDepth);
+    Boolean isParent = parent == null;
+    if (isParent || maxDepth) {
+      return new RootSearchResult(sob.Id, isParent);
     } else {
       return findRoot(parent, ++depth, foundRoots);
     }
