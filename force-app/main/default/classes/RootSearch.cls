@@ -22,6 +22,7 @@ public class RootSearch {
    * Constructor
    * @param sobType The SObject Type to search on
    * @param parentField The Master-Detail or Lookup relationship to traverse
+   * @param how many relationship field to query at the same time. This may help when ORA-00972 appears
    */
   public RootSearch(SObjectType sobType, SObjectField parentField, Integer maxDepthForIteration) {
     this.sobType = sobType;
