@@ -7,6 +7,7 @@ public class RootSearch {
   SObjectType sobType;
   SObjectField parentField;
   String query;
+  Integer maxDepthForIteration;
 
   /**
    * Constructor
@@ -14,8 +15,19 @@ public class RootSearch {
    * @param parentField The Master-Detail or Lookup relationship to traverse
    */
   public RootSearch(SObjectType sobType, SObjectField parentField) {
+    this(sobType, parentField, HierarchicalSearchUtil.DEFAULT_MAX_DEPTH);
+  }
+
+  /**
+   * Constructor
+   * @param sobType The SObject Type to search on
+   * @param parentField The Master-Detail or Lookup relationship to traverse
+   * @param how many relationship field to query at the same time. This may help when ORA-00972 appears
+   */
+  public RootSearch(SObjectType sobType, SObjectField parentField, Integer maxDepthForIteration) {
     this.sobType = sobType;
     this.parentField = parentField;
+    this.maxDepthForIteration = maxDepthForIteration;
     this.query = generateQuery();
   }
 
@@ -54,10 +66,11 @@ public class RootSearch {
       return new RootSearchResult(foundRoots.get(sob.Id), true);
     }
 
-    Boolean maxDepth = depth == 5;
+    Boolean maxDepth = isMaxDepth(depth);
     SObject parent = sob.getSObject(this.parentField);
-    if (parent == null || maxDepth) {
-      return new RootSearchResult(sob.Id, !maxDepth);
+    Boolean isParent = parent == null;
+    if (isParent || maxDepth) {
+      return new RootSearchResult(sob.Id, isParent);
     } else {
       return findRoot(parent, ++depth, foundRoots);
     }
@@ -76,11 +89,15 @@ public class RootSearch {
       WHERE Id IN :ids
    */
   private String generateQuery() {
-    String[] fields = HierarchicalSearchUtil.generateMaxTraverseFields(this.parentField);
+    String[] fields = HierarchicalSearchUtil.generateMaxTraverseFields(this.parentField, this.maxDepthForIteration);
     return String.format(
       'SELECT {0} \nFROM {1} \nWHERE Id IN :ids',
       new List<String>{ String.join(fields, ',\n'), this.sobType.getDescribe().getName() }
     );
+  }
+
+  private Boolean isMaxDepth(Integer depth) {
+    return depth == this.maxDepthForIteration;
   }
 
   private class RootSearchResult {

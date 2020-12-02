@@ -7,6 +7,7 @@ public class DescendantSearch {
   SObjectType sobType;
   SObjectField relationship;
   String query;
+  Integer maxDepthForIteration;
 
   /**
    * Constructor
@@ -14,8 +15,19 @@ public class DescendantSearch {
    * @param parentField The Master-Detail or Lookup relationship to traverse
    */
   public DescendantSearch(SObjectType sobType, SObjectField relationship) {
+    this(sobType, relationship, HierarchicalSearchUtil.DEFAULT_MAX_DEPTH);
+  }
+
+  /**
+   * Constructor
+   * @param sobType The SObject Type to search on
+   * @param parentField The Master-Detail or Lookup relationship to traverse
+   * @param how many relationship field to query at the same time. This may help when ORA-00972 appears
+   */
+  public DescendantSearch(SObjectType sobType, SObjectField relationship, Integer maxDepthForIteration) {
     this.relationship = relationship;
     this.sobType = sobType;
+    this.maxDepthForIteration = maxDepthForIteration;
     query = generateQuery();
   }
 
@@ -41,7 +53,7 @@ public class DescendantSearch {
       TrunkReference tr = getTrunkReference(child, 1, leafTrunkMap);
       Id trunkId = tr.trunkId;
 
-      if (tr.depth == 6) {
+      if (isDeepestDepth(tr.depth)) {
         // matched at deepest depth, there MAY still be children at deeper depths
         potentialLeafMap.put(child.Id, trunkId);
       }
@@ -104,7 +116,7 @@ public class DescendantSearch {
         ParentId NULLS LAST
    */
   private String generateQuery() {
-    String[] selectList = HierarchicalSearchUtil.generateMaxTraverseFields(relationship);
+    String[] selectList = HierarchicalSearchUtil.generateMaxTraverseFields(this.relationship, this.maxDepthForIteration);
     Integer fieldSize = selectList.size();
 
     String[] whereList = new List<String>{};
@@ -126,6 +138,10 @@ public class DescendantSearch {
         String.join(orderList, ',\n')
       }
     );
+  }
+
+  private Boolean isDeepestDepth(Integer depth) {
+    return depth > this.maxDepthForIteration;
   }
 
   //inner classed use to hold Trunk information

@@ -55,6 +55,25 @@ public class HierarchicalSearchTests {
   }
 
   @isTest
+  private static void rootSearchWideDepth4() {
+    List<Account> accounts = createAccountChain(3);
+
+    List<Account> widen = new List<Account>{
+      new Account(Name = '2-2', ParentId = accounts[1].Id),
+      new Account(Name = '3-2', ParentId = accounts[2].Id),
+      new Account(Name = '3-3', ParentId = accounts[2].Id),
+      new Account(Name = '3-4', ParentId = accounts[2].Id)
+    };
+    insert widen;
+
+    RootSearch r = new RootSearch(Account.getSObjectType(), Account.ParentId, 4);
+    Map<Id, Id> roots = r.search(new Map<Id, Account>(widen).keySet());
+    for (Account acc : widen) {
+      System.assertEquals(accounts[0].Id, roots.get(acc.Id));
+    }
+  }
+
+  @isTest
   private static void rootSearchDeep() {
     List<Account> accounts = createAccountChain(10);
 
@@ -84,6 +103,27 @@ public class HierarchicalSearchTests {
     List<Account> accounts = createAccountChain(13);
 
     DescendantSearch r = new DescendantSearch(Account.sObjectType, Account.ParentId);
+    Map<Id, Id[]> children = r.search(new Set<Id>{ accounts[0].id });
+    System.assert(children.containsKey(accounts[0].Id));
+    System.assertEquals(12, children.get(accounts[0].Id).size());
+
+    children = r.search(new Set<Id>{ accounts[2].id });
+    System.assert(children.containsKey(accounts[2].Id));
+    System.assertEquals(10, children.get(accounts[2].Id).size());
+
+    children = r.search(new Set<Id>{ accounts[9].id });
+    System.assert(children.containsKey(accounts[9].Id));
+    System.assertEquals(3, children.get(accounts[9].Id).size());
+
+    children = r.search(new Set<Id>{ accounts[12].id });
+    System.assert(!children.containsKey(accounts[12].Id));
+  }
+
+  @isTest
+  private static void descendantSearchDeepTestDepth3() {
+    List<Account> accounts = createAccountChain(13);
+
+    DescendantSearch r = new DescendantSearch(Account.sObjectType, Account.ParentId, 3);
     Map<Id, Id[]> children = r.search(new Set<Id>{ accounts[0].id });
     System.assert(children.containsKey(accounts[0].Id));
     System.assertEquals(12, children.get(accounts[0].Id).size());
